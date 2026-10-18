@@ -1,0 +1,284 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Cubli: study guide and first math
+problem}\label{cubli-study-guide-and-first-math-problem}
+
+\subsection{1. What the ETH reference
+says}\label{what-the-eth-reference-says}
+
+\textbf{Michael Muehlebach (2018), \emph{On the Stabilization of
+Unstable Systems - Some Comments and Applications}, ETH thesis no.
+24789.} \href{phdthesisE-Collection.pdf}{Local PDF} \textbar{}
+\href{https://doi.org/10.3929/ethz-b-000254022}{Official record}.
+
+The thesis has four parts: Cubli, a ducted-fan flying vehicle,
+constrained LQR/MPC approximations, and distributed state estimation.
+\textbf{Read Part A first}; the other parts are not prerequisites for
+building a balancing cube. Page numbers below are printed thesis pages;
+PDF viewer pages are also given.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Read
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Main result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What it means for this project
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+P1, dynamics: pp.~25-28 (PDF 44-47) & A 150 mm cube with three
+perpendicular reaction wheels; gravity, inertia, and angular momentum
+determine its motion. & Motor torque accelerates a wheel and reacts on
+the frame. Wheel speeds are states, not just outputs. \\
+P1, nonlinear control: pp.~28-37 (PDF 47-56) & Backstepping with a
+Lyapunov argument stabilizes the upright set almost everywhere in the
+ideal model. Feedback linearization supports trajectory tracking. &
+First understand stability proofs and the model; the result is not a
+guarantee under arbitrary motor limits or impacts. \\
+P1, jump-up: pp.~37-45 (PDF 56-64) & Braking transfers wheel momentum to
+the cube. A gradient-based learning method adjusts initial wheel speeds;
+a guiding controller tracks the rise. & Jump-up is a separate hybrid
+maneuver, not ordinary balancing with larger gains. \\
+P1, experiments: pp.~45-47 (PDF 64-66) & Reported steady-state RMS
+inclination error below 0.025 degrees; recovery in under 1.8 s after a
+0.17 N m, 60 ms disturbance on one wheel. & These are results for ETH's
+apparatus, not performance promises for a printed prototype. \\
+P2, estimation: pp.~51-78 (PDF 70-97) & Multiple accelerometers and a
+non-accelerated pivot assumption estimate tilt using rigid-body
+kinematics, without mass/inertia knowledge. & A moving accelerometer
+measures rotational acceleration as well as gravity; simply treating its
+reading as gravity can give wrong tilt. \\
+\end{longtable}
+}
+
+\textbf{Important limitations:} the reduced gravity-vector
+representation describes tilt but discards yaw orientation. In the ideal
+frictionless-pivot model, angular momentum about gravity is conserved:
+one cannot generally force both frame yaw rate and all wheel speeds to
+zero. Ground friction changes this. ETH's almost-global balancing result
+concerns an upright set, not arbitrary full-attitude regulation with
+every wheel stopped.
+
+\textbf{INDI is not the controller developed in these Cubli chapters.}
+It is our proposed comparison. Start with their dynamics and a
+conventional baseline; do not assume INDI will outperform it without
+experiments.
+
+\subsection{2. Nonlinear-control book}\label{nonlinear-control-book}
+
+\textbf{Hassan K. Khalil, \emph{Nonlinear Systems}, 3rd edition,
+Prentice Hall, 2002, ISBN 9780130673893.}
+\href{https://www.egr.msu.edu/~khalil/NonlinearSystems/index.html}{Author's
+companion site} \textbar{}
+\href{https://www.egr.msu.edu/~khalil/NonlinearSystems/contents.html}{Verified
+contents} \textbar{}
+\href{https://www.pearson.com/en-us/subject-catalog/p/nonlinear-systems/P200000003306/9780130673893}{Publisher}.
+Obtain the book through a library or publisher; only its citation and
+links are included here, not a copied textbook.
+
+Suggested order: section 1.2.1 (pendulum), chapter 2 (phase portraits),
+sections 4.1-4.3 (Lyapunov, invariance, linearization), section 12.2
+(stabilization via linearization), chapter 13 (feedback linearization),
+then section 14.3 (backstepping). Chapters 4 and 13 are the priority.
+
+\subsection{3. Similar concept: a reaction-wheel inverted
+pendulum}\label{similar-concept-a-reaction-wheel-inverted-pendulum}
+
+Think of one Cubli face on a fixed horizontal pivot, carrying one motor
+and wheel. This has the same gravity-versus-reaction-torque mechanism,
+without three-dimensional coupling. The following is an original
+educational exercise, not a reproduction of a textbook problem or ETH's
+full model.
+
+Assume a rigid body, fixed frictionless pivot, ideal motor torque, no
+impacts, and no wheel/body drag. Let:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\theta\): body angle from upright; \(\omega=\dot\theta\).
+\item
+  \(\phi\): wheel angle relative to the body; \(s=\dot\theta+\dot\phi\)
+  is its absolute speed.
+\item
+  \(I\): pivot inertia of the non-spinning assembly, including
+  wheel-center translation but excluding the wheel's axial spin inertia
+  \(J\).
+\item
+  \(m\): total mass; \(l\): pivot-to-total-center-of-mass distance.
+\item
+  \(\tau\): torque on the wheel; the reaction torque on the body is
+  \(-\tau\).
+\end{itemize}
+
+Use these \textbf{illustrative parameters, not a hardware shopping
+specification}:
+
+\[m=0.40\ {\rm kg},\quad l=0.08\ {\rm m},\quad
+I=0.004\ {\rm kg\,m^2},\quad J=0.0002\ {\rm kg\,m^2},\quad g=9.81\ {\rm m/s^2}.\]
+
+\subsubsection{Problems to solve}\label{problems-to-solve}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Start with
+  \(L=\frac12 I\dot\theta^2+\frac12 J(\dot\theta+\dot\phi)^2-mgl\cos\theta\).
+  The generalized forces for \((\theta,\phi)\) are \((0,\tau)\) because
+  the motor is internal. Derive the two Euler-Lagrange equations and
+  show \(I\dot\omega=mgl\sin\theta-\tau\) and \(J\dot s=\tau\).
+\item
+  Linearize at \((\theta,\omega,s,\tau)=(0,0,0,0)\). Write \(A,B\) for
+  \(x=(\theta,\omega,s)\); show the upright angle is open-loop unstable.
+\item
+  For the \textbf{angle subsystem}, choose
+  \(\tau=mgl\sin\theta+I(k_p\theta+k_d\omega)\). Find the closed-loop
+  equation and choose gains for a critically damped response with
+  natural frequency \(8\ {\rm rad/s}\).
+\item
+  Use \(V=\frac12 k_p\theta^2+\frac12\omega^2\) to prove angle
+  convergence. Explain why \(\dot V\leq0\) alone is insufficient and use
+  LaSalle's principle. Does this also prove \(s\to0\)?
+\item
+  Starting from \(\theta=5\) degrees, \(\omega=s=0\), calculate the
+  initial torque. Simulate the nonlinear plant with
+  \(|\tau|\leq0.20\ {\rm N\,m}\) and a wheel-speed ceiling
+  \(|s|\leq300\ {\rm rad/s}\). Detect and stop/report a speed-limit
+  violation; do not clip \(s\), since that would introduce an unmodeled
+  braking torque.
+\item
+  Write \(\dot\omega=f(\theta)+G\tau\) and derive an INDI update for
+  target acceleration \(v=-k_p\theta-k_d\omega\), using a recent
+  measured acceleration \(\alpha_0\) and the corresponding applied
+  torque \(\tau_0\). Explain what fails if the acceleration measurement
+  is delayed or noisy.
+\end{enumerate}
+
+Checkpoints: open after attempting the problems
+
+\begin{itemize}
+\tightlist
+\item
+  For the Euler-Lagrange coordinates, \(q_1=\theta\) (body angle) and
+  \(q_2=\phi\) (wheel angle relative to the body). Their generalized
+  forces are \(Q_1=Q_\theta=0\) and \(Q_2=Q_\phi=\tau\): the motor
+  applies \(-\tau\) to the body and \(+\tau\) to the wheel, so its
+  virtual work is
+  \(-\tau\,\delta\theta+\tau\,\delta(\theta+\phi)=\tau\,\delta\phi\).
+  Since
+  \(\partial L/\partial\dot\theta=I\dot\theta+J(\dot\theta+\dot\phi)\)
+  and \(\partial L/\partial\theta=mgl\sin\theta\), the \(\theta\)
+  equation is \((I+J)\ddot\theta+J\ddot\phi-mgl\sin\theta=0\), or
+  \((I+J)\ddot\theta+J\ddot\phi=mgl\sin\theta\). The \(\phi\) equation
+  is \(J(\ddot\theta+\ddot\phi)=\tau\), i.e.~\(J\dot s=\tau\).
+  Substituting this into the \(\theta\) equation gives
+  \(I\ddot\theta=mgl\sin\theta-\tau\), or
+  \(I\dot\omega=mgl\sin\theta-\tau\).
+\item
+  The coupled equations are
+  \((I+J)\ddot\theta+J\ddot\phi=mgl\sin\theta\) and
+  \(J(\ddot\theta+\ddot\phi)=\tau\).
+\item
+  With \(a=mgl/I=78.48\ {\rm s^{-2}}\):
+  \(A=\begin{bmatrix}0&1&0\\a&0&0\\0&0&0\end{bmatrix}\),
+  \(B=\begin{bmatrix}0\\-1/I\\1/J\end{bmatrix}\). The open-loop
+  eigenvalues are \(0\) and approximately \(\pm8.86\ {\rm s^{-1}}\).
+\item
+  Ideal cancellation gives \(\ddot\theta+k_d\dot\theta+k_p\theta=0\);
+  choose \(k_p=64\ {\rm s^{-2}}\), \(k_d=16\ {\rm s^{-1}}\).
+\item
+  \(\dot V=-k_d\omega^2\). The largest invariant set with \(\omega=0\)
+  also has \(\theta=0\), proving angle convergence in the ideal,
+  unsaturated angle model. This is not a global physical Cubli proof.
+\item
+  Wheel speed need not converge to zero:
+  \(s(t)=s(0)+J^{-1}\int_0^t\tau\,dt\). The angle-only controller leaves
+  the wheel's final speed unconstrained. As an extension, use full-state
+  LQR to include wheel-speed regulation.
+\item
+  The initial torque is approximately \(0.0497\ {\rm N\,m}\). Even when
+  initial torque is feasible, check the entire trajectory's limits.
+\item
+  \(f=(mgl/I)\sin\theta\), \(G=-1/I\). Locally,
+  \(\dot\omega\approx\alpha_0+G(\tau-\tau_0)\), hence
+  \(\tau=\tau_0+I(\alpha_0-v)\). This assumes gravity changes little
+  over the increment and applied torque responds fast enough.
+  Time-align/filter the torque and acceleration signals consistently and
+  include actuator dynamics and saturation.
+\end{itemize}
+
+\end{document}

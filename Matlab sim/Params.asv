@@ -1,0 +1,41 @@
+% Bobrow et al., Table I, PDF p. 2. SI units throughout.
+g = 9.81;          % m/s^2
+
+%geometry
+l = 0.15;         % cube side, m
+d = l*sqrt(2)/2;   % pivot-to-center distance for both bodies, m
+
+%masses
+mw = 0.15;        % wheel mass, kg
+mb = 0.70;        % body mass (excluding wheel), kg
+mtot = mw + mb;
+
+%inertias
+Ibg = 3.75e-3;     % body inertia at center of mass, kg*m^2
+Iwg = 1.25e-4;     % wheel axial inertia at center of mass, kg*m^2
+Ibo = Ibg + mb*d^2;
+Iwo = Iwg + mw*d^2;
+Itot = Ibo + Iwo;
+IcO_bar = Itot - Iwg; % pivot inertia excluding wheel axial spin
+
+
+%gravity gains
+mgd = mtot*g*d;
+
+
+
+
+tau_input = 10; % motor torque, N*m
+bw = 1e3;  % motor/wheel viscous friction*
+
+% Simulink gains: thetab is measured from upright; positive tau drives wheel.
+gravity_gain = mtot*g*d; % gravity torque = gravity_gain*sin(thetab), N*m
+body_accel_gain = 1/IcO_bar;
+wheel_accel_gain = 1/Iwg;
+M = [IcO_bar Iwg; 0 Iwg]; % PDF Eq. (9), inertia coefficients in kg*m^2
+
+% Integrator initial conditions; s is ABSOLUTE wheel speed.
+thetab0 = 0;       % rad; set to 5*pi/180 for an open-loop tilt test
+thetabdot0 = 0;    % rad/s
+s0 = 0;           % rad/s; relative wheel speed = s - thetabdot
+x0 = [thetab0; thetabdot0; s0];

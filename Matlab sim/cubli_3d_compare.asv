@@ -1,0 +1,179 @@
+clear;
+close all;
+clc;
+
+% Simulation steps:
+% 1. Load the paper parameters and the four initial conditions from Params.m.
+% 2. Form the exact coupled Eq. (9) model using theta_c and relative theta_w.
+% 3. Integrate [theta_c; theta_c_dot; theta_w; theta_w_dot] with ode45.
+% 4. Measure theta_c and relative wheel speed theta_w_dot in a table/plots.
+% 5. Animate the cube about its fixed edge and the wheel about the same axis.
+
+scriptFolder = fileparts(mfilename("fullpath"));
+run(fullfile(scriptFolder, "Params.m"));
+
+% State: x = [thetab; thetabdot; thetaw; thetawdot].
+% Paper Fig. 4: thetab = theta_c is measured from horizontal to a cube face.
+% The unstable upright equilibrium is thetab = pi/4. thetaw is body-relative.
+p.Ibody = IcO_bar;
+p.Iwheel = Iwg;
+p.mgd = mgd;
+p.bw = bw;
+p.tau = tau_input;
+
+t = (0:0.01:30).';
+options = odeset("RelTol", 1e-8, "AbsTol", 1e-10);
+[t, x] = ode45(@(t, x) cubliDynamics(t, x, p), t, x0, options);
+
+thetab = x(:, 1);
+thetawdot = x(:, 4);
+measurements = table(t, thetab, thetawdot, ...
+    'VariableNames', {'Time_s', 'thetab_rad', 'thetawdot_rad_s'});
+
+figure("Name", "Cubli measurements", "Color", "w");
+tiledlayout(2, 1);
+nexttile;
+plot(t, rad2deg(thetab), "LineWidth", 1.5);
+yline(0, "k:");
+grid on;
+xlabel("Time (s)");
+ylabel("\theta_b (deg)");
+title("Paper body angle \theta_c (upright = 45 deg)");
+
+nexttile;
+plot(t, thetawdot, "LineWidth", 1.5);
+yline(0, "k:");
+grid on;
+xlabel("Time (s)");
+ylabel("\omega_w = d\theta_w/dt (rad/s)");
+title("Wheel speed relative to body");
+
+animateCubli(t, x, l, d);
+
+function dx = cubliDynamics(~, x, p)
+    thetab = x(1);
+    thetawdot = x(4);
+
+    wheelTorque = p.tau - p.bw*thetawdot;
+    gravityTorque = p.mgd*cos(thetab);
+
+    % Exact paper Eq. (9), with the pi/4 required by Eq. (6) and Fig. 4:
+    % [Ibar Iw; 0 Iw]*[thetabddot; thetabddot+thetawddot]
+    %     = [-mgd*cos(thetab+pi/4); wheelTorque].
+    accelerations = [p.Ibody p.Iwheel; 0 p.Iwheel] \ ...
+        [-gravityTorque; wheelTorque];
+    thetabddot = accelerations(1);
+    thetawddot = accelerations(2) - thetabddot;
+
+    dx = [x(2); thetabddot; thetawdot; thetawddot];
+end
+
+function animateCubli(t, x, sideLength, centerDistance)
+    figure("Name", "Cubli 3D dynamics", "Color", "w");
+    ax = axes;
+    hold(ax, "on");
+    grid(ax, "on");
+    axis(ax, "equal");
+    axis(ax, 1.25*[-sideLength sideLength -0.35*sideLength 1.5*sideLength ...
+                   -0.35*sideLength 1.5*sideLength]);
+    view(ax, 32, 20);
+    xlabel(ax, "World X / pivot axis (m)");
+    ylabel(ax, "World Y (m)");
+    zlabel(ax, "World Z (m)");
+
+    [vertices, faces] = cubeAtAngle(sideLength, x(1, 1));
+    body = patch(ax, "Faces", faces, "Vertices", vertices, ...
+        "FaceColor", [0.30 0.65 0.95], "FaceAlpha", 0.28, ...
+        "EdgeColor", [0.10 0.25 0.40], "LineWidth", 1.2);
+
+    pivotLength = 1.25*sideLength;
+    plot3(ax, [-pivotLength pivotLength], [0 0], [0 0], "r--", ...
+        "LineWidth", 1.8);
+    plot3(ax, 0, 0, 0, "ro", "MarkerFaceColor", "r", "MarkerSize", 8);
+    text(ax, -pivotLength, 0, 0, "  pivot axis (X_p)", ...
+        "Color", "r", "FontWeight", "bold");
+    text(ax, 0, 0, 0, "  PIVOT", "Color", "r", "FontWeight", "bold");
+
+    bodyAxisLength = 0.55*sideLength;
+    bx = plot3(ax, nan, nan, nan, "Color", [0.85 0.15 0.15], "LineWidth", 2.5);
+    by = plot3(ax, nan, nan, nan, "Color", [0.10 0.55 0.15], "LineWidth", 2.5);
+    bz = plot3(ax, nan, nan, nan, "Color", [0.10 0.25 0.90], "LineWidth", 2.5);
+
+    wheelRadius = 0.34*sideLength;
+    wheelHalfWidth = 0.37*sideLength;
+    wheel = plot3(ax, nan, nan, nan, "k-", "LineWidth", 2.2);
+    wheelAxis = plot3(ax, nan, nan, nan, "m-", "LineWidth", 3);
+    spoke = plot3(ax, nan, nan, nan, "Color", [0.85 0.35 0], "LineWidth", 2.5);
+    centerMark = plot3(ax, nan, nan, nan, "ko", "MarkerFaceColor", "k");
+
+    step = max(1, round(0.03/mean(diff(t))));
+    circleAngle = linspace(0, 2*pi, 80);
+
+    for k = 1:step:numel(t)
+        frameStart = tic;
+        thetaBody = x(k, 1);
+        bodyRotation = rotationX(thetaBody);
+        [currentVertices, ~] = cubeAtAngle(sideLength, thetaBody);
+        set(body, "Vertices", currentVertices);
+
+        center = [0;
+                  centerDistance*cos(thetaBody + pi/4);
+                  centerDistance*sin(thetaBody + pi/4)];
+        bodyAxes = bodyRotation;
+        updateAxisLine(bx, center, bodyAxes(:, 1), bodyAxisLength);
+        updateAxisLine(by, center, bodyAxes(:, 2), bodyAxisLength);
+        updateAxisLine(bz, center, bodyAxes(:, 3), bodyAxisLength);
+
+        wheelPointsBody = [zeros(size(circleAngle));
+                           wheelRadius*cos(circleAngle);
+                           wheelRadius*sin(circleAngle)];
+        wheelPoints = center + bodyRotation*wheelPointsBody;
+        set(wheel, "XData", wheelPoints(1, :), ...
+            "YData", wheelPoints(2, :), "ZData", wheelPoints(3, :));
+
+        axisEnds = center + [-wheelHalfWidth wheelHalfWidth; 0 0; 0 0];
+        set(wheelAxis, "XData", axisEnds(1, :), ...
+            "YData", axisEnds(2, :), "ZData", axisEnds(3, :));
+
+        absoluteWheelAngle = x(k, 1) + x(k, 3);
+        spokeEnd = center + [0;
+                             wheelRadius*cos(absoluteWheelAngle);
+                             wheelRadius*sin(absoluteWheelAngle)];
+        set(spoke, "XData", [center(1) spokeEnd(1)], ...
+            "YData", [center(2) spokeEnd(2)], ...
+            "ZData", [center(3) spokeEnd(3)]);
+        set(centerMark, "XData", center(1), "YData", center(2), "ZData", center(3));
+
+        title(ax, sprintf("t = %.2f s,  \\theta_c = %.1f deg,  \\omega_w = %.1f rad/s", ...
+            t(k), rad2deg(x(k, 1)), x(k, 4)));
+        drawnow;
+        if k + step <= numel(t) && strcmp(get(gcf, "Visible"), "on")
+            pause(max(0, t(k + step) - t(k) - toc(frameStart)));
+        end
+    end
+
+    legend(ax, [bx by bz wheel wheelAxis], ...
+        ["body x_b", "body y_b", "body z_b", "reaction wheel", "wheel axis"], ...
+        "Location", "northeastoutside");
+end
+
+function [vertices, faces] = cubeAtAngle(sideLength, angle)
+    h = sideLength/2;
+    bodyVertices = [-h 0 0; h 0 0; h sideLength 0; -h sideLength 0; ...
+                    -h 0 sideLength; h 0 sideLength; ...
+                     h sideLength sideLength; -h sideLength sideLength];
+    vertices = (rotationX(angle)*bodyVertices.').';
+    faces = [1 2 3 4; 5 8 7 6; 1 5 6 2; ...
+             2 6 7 3; 3 7 8 4; 5 1 4 8];
+end
+
+function updateAxisLine(lineHandle, origin, direction, axisLength)
+    endpoint = origin + axisLength*direction;
+    set(lineHandle, "XData", [origin(1) endpoint(1)], ...
+        "YData", [origin(2) endpoint(2)], ...
+        "ZData", [origin(3) endpoint(3)]);
+end
+
+function R = rotationX(angle)
+    R = [1 0 0; 0 cos(angle) -sin(angle); 0 sin(angle) cos(angle)];
+end

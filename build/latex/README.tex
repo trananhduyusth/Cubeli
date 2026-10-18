@@ -1,0 +1,488 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Cubli Control}\label{cubli-control}
+
+Build a reaction-wheel balancing cube and compare PD/LQR with
+Incremental Nonlinear Dynamic Inversion (INDI).
+
+\subsection{Start here}\label{start-here}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Solve and simulate a \textbf{one-wheel inverted pendulum} before
+  designing the cube.
+\item
+  Size the motor and wheel together; CAD the frame, mounts, and wheel
+  guard.
+\item
+  Build one restrained axis; verify IMU, motor torque control, and speed
+  limits.
+\item
+  Establish PD/LQR balancing, then test INDI under the same
+  disturbances.
+\item
+  Expand to three orthogonal wheels. Leave jump-up for a later stage.
+\end{enumerate}
+
+Print brackets and fit-check parts, not an unqualified high-speed
+flywheel. Use a secured metal rotor, containment, and an emergency stop.
+
+\subsection{Build the documents}\label{build-the-documents}
+
+Pandoc and MiKTeX are used to turn the Markdown documents into LaTeX and
+PDFs. Run the VS Code task \textbf{Build Markdown PDFs} to create
+\texttt{build/latex/README.tex} and \texttt{build/latex/STUDY.tex}, plus
+\texttt{README.pdf} and \texttt{Ref/STUDY.pdf}. The \textbf{Watch
+Markdown PDFs} task builds both documents and rebuilds the affected PDF
+when either Markdown file is saved. Missing MiKTeX packages are
+installed automatically during compilation.
+
+\subsection{1D simulation}\label{d-simulation}
+
+Start with one reaction wheel and a fixed, frictionless edge pivot. The
+parameters in \href{Matlab\%20sim/Params.m}{Params.m} are the CAD values
+from Table I of
+\href{Ref/lagrange\%20cubli\%20\%26\%20complex\%20formation.pdf}{Bobrow
+et al.}, not measured prototype values.
+
+\subsubsection{Coordinates and the paper's missing
+offset}\label{coordinates-and-the-papers-missing-offset}
+
+The simulation now uses the paper's Fig. 4 coordinates:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\theta_c=\) \texttt{thetab}: angle from world horizontal \(+Y\) to a
+  cube face.
+\item
+  \(\theta_w=\) \texttt{thetaw}: reaction-wheel angle relative to the
+  cube.
+\item
+  \(\omega_w=\dot\theta_w=\) \texttt{thetawdot}: relative wheel speed.
+\item
+  The center-of-mass line is at \(\theta_c+\pi/4\).
+\item
+  The unstable edge-balancing position is \(\theta_c=\pi/4=45^\circ\),
+  not zero.
+\item
+  Positive motor torque accelerates the wheel and applies negative
+  reaction torque to the body.
+\end{itemize}
+
+The paper gives
+
+\[T=\frac12\bar I_{cO}\dot\theta_c^2+
+  \frac12 I_{wG}(\dot\theta_c+\dot\theta_w)^2,
+\qquad
+V=m_cgd\sin\left(\theta_c+\frac{\pi}{4}\right).\]
+
+Therefore,
+
+\[\frac{\partial V}{\partial\theta_c}
+=m_cgd\cos\left(\theta_c+\frac{\pi}{4}\right).\]
+
+The printed Eq. (7), Eq. (9), Eq. (11), and Fig. 5 show
+\(m_cgd\cos\theta_c\) without the \(\pi/4\). That expression conflicts
+with the paper's Eq. (6), Fig. 4 geometry, and its later statement that
+\(\theta_c=45^\circ\) is the unstable equilibrium. The simulation
+retains the paper coordinate and cosine gravity term, but restores the
+required offset:
+
+\[\bar I_{cO}\ddot\theta_c+
+I_{wG}(\ddot\theta_c+\ddot\theta_w)
+=-m_cgd\cos\left(\theta_c+\frac{\pi}{4}\right),\]
+
+\[I_{wG}(\ddot\theta_c+\ddot\theta_w)
+=-\tau_f(\dot\theta_w)+\tau.\]
+
+Let \(u=\tau-\tau_f(\dot\theta_w)\). The exact matrix model
+corresponding to the paper's Eq. (9) is
+
+\[\begin{bmatrix}
+\bar I_{cO} & I_{wG}\\
+0 & I_{wG}
+\end{bmatrix}
+\begin{bmatrix}
+\ddot\theta_c\\
+\ddot\theta_c+\ddot\theta_w
+\end{bmatrix}
+=
+\begin{bmatrix}
+-m_cgd\cos(\theta_c+\pi/4)\\
+u
+\end{bmatrix}.\]
+
+Solving it gives
+
+\[\ddot\theta_c=
+\frac{-m_cgd\cos(\theta_c+\pi/4)-u}{\bar I_{cO}},
+\qquad
+\ddot\theta_w=\frac{u}{I_{wG}}-\ddot\theta_c.\]
+
+The second equation matters because \(\theta_w\) is relative to the
+body. Paper Eq. (11) uses \(\ddot\theta_w\gg\ddot\theta_c\) to
+approximate \(\ddot\theta_w\approx u/I_{wG}\); the MATLAB script instead
+integrates the exact Eq. (9) dynamics. Motor friction uses paper Eq.
+(36) with the identified Table II values:
+
+\[\tau_f(\dot\theta_w)=\operatorname{sign}(\dot\theta_w)
+\left(\tau_c+b_w|\dot\theta_w|+c_d\dot\theta_w^2\right),\]
+
+\(\tau_c=2.46\times10^{-3}\) N m, \(b_w=1.06\times10^{-5}\) N m s/rad,
+\(c_d=1.70\times10^{-8}\) N m s²/rad². \texttt{sign} is smoothed as
+\(\tanh(\dot\theta_w/\omega_\epsilon)\), \(\omega_\epsilon=0.5\) rad/s,
+to avoid solver chattering at zero wheel speed. Optional pivot damping
+\(-b_c\dot\theta_c\) is added to the body equation; the paper has none,
+so \texttt{bc\ =\ 0} by default.
+
+\subsubsection{Why the swinging cube barely loses
+energy}\label{why-the-swinging-cube-barely-loses-energy}
+
+Motor friction is \textbf{internal}: it acts between wheel and body, and
+it only dissipates power \(\tau_f\dot\theta_w\) when the wheel slips
+relative to the body. The paper has no pivot/edge friction, so the
+swinging body itself is conservative. With a small swing about the
+hanging position, the validated model loses about 15\% of the swing
+energy in 10 s. Set \texttt{bc\ \textgreater{}\ 0} to model edge
+friction if your hardware decays faster.
+
+In paper Eq. (11)/Fig. 5, the relative wheel acceleration is
+approximated as \((\tau-\tau_f)/I_{wG}\), independent of body motion. In
+that approximation, with \(\tau=0\) and \(\dot\theta_w(0)=0\), the wheel
+never slips, \(\tau_f=0\), and the body loses \textbf{no} energy at all.
+
+\subsubsection{\texorpdfstring{Why constant torque barely moves the body
+with large
+\texttt{bw}}{Why constant torque barely moves the body with large bw}}\label{why-constant-torque-barely-moves-the-body-with-large-bw}
+
+The body only feels the motor reaction while the wheel accelerates:
+\(I_{wG}(\ddot\theta_c+\ddot\theta_w)=\tau-\tau_f\). Once friction
+equals the motor torque, \(u=0\) and the body sees no net torque. With a
+viscous \texttt{bw\ =\ 1e-2}, the wheel reaches \(\tau/b_w\) (20 rad/s
+for 0.2 N m) in about \(I_{wG}/b_w=12.5\) ms, giving the body only a
+tiny impulse: \(\theta_b\) moved about \(\pm1.3^\circ\). With the
+paper's friction, the same torque spins the wheel to about 3000 rad/s
+over several seconds, and \(\theta_b\) swings from \(-115^\circ\) to
+\(-77^\circ\). Also note gravity torque is \(mgd\approx0.88\) N m, so a
+constant hanging-position offset needs \(\sin^{-1}(\tau/mgd)\); that is
+only \(3.2^\circ\) for 0.05 N m.
+
+\subsubsection{Validation results}\label{validation-results}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Check
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Result
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Simulink vs \texttt{ode45}, 80° release, 0--2 s &
+\(\max|\Delta\theta_b|=6\times10^{-4}\) rad \\
+Small-swing period about hanging & 0.775 s vs theory
+\(2\pi/\sqrt{mgd/\bar I_{cO}}=0.771\) s \\
+Hanging, 0.05 N m & body settles about 2.9° from hanging, near
+\(\sin^{-1}(\tau/mgd)=3.2^\circ\) \\
+Upright 90°, zero torque & stays briefly, then falls (unstable
+equilibrium) \\
+\end{longtable}
+}
+
+\subsubsection{Set the initial
+conditions}\label{set-the-initial-conditions}
+
+Edit these values in \href{Matlab\%20sim/Params.m}{Params.m}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{thetab0} \OperatorTok{=} \VariableTok{deg2rad}\NormalTok{(}\FloatTok{90}\NormalTok{)}\OperatorTok{;} \CommentTok{\% theta\_c; upright is 90 deg when com\_angle\_offset = 0}
+\VariableTok{thetabdot0} \OperatorTok{=} \FloatTok{0}\OperatorTok{;}        \CommentTok{\% body speed, rad/s}
+\VariableTok{thetaw0} \OperatorTok{=} \FloatTok{0}\OperatorTok{;}           \CommentTok{\% wheel angle relative to body, rad}
+\VariableTok{thetawdot0} \OperatorTok{=} \FloatTok{0}\OperatorTok{;}        \CommentTok{\% wheel speed relative to body, rad/s}
+\end{Highlighting}
+\end{Shaded}
+
+The Simulink integrators read these names directly; never type numbers
+such as \texttt{pi} into an integrator's initial condition. Then
+\texttt{x0\ =\ {[}thetab0;\ thetabdot0;\ thetaw0;\ thetawdot0{]}}.
+Upright is \texttt{pi/2\ -\ com\_angle\_offset} and hanging is
+\texttt{-pi/2\ -\ com\_angle\_offset}. To observe falling, start a few
+degrees away from upright.
+
+\subsubsection{Simulink blocks}\label{simulink-blocks}
+
+Run \texttt{Params} in the model's InitFcn callback (script must be on
+the MATLAB path). All angles entering trigonometric blocks are radians.
+Do not multiply an integrator output by \texttt{pi/180}; use
+\texttt{deg2rad} only for numeric initial values.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Subtract body speed from absolute wheel speed:
+  \(\dot\phi=s-\dot\theta\). In the four-state implementation this
+  signal is directly \texttt{thetawdot}.
+\item
+  The \texttt{Friction} Fcn block computes paper Eq. (36) from
+  \texttt{thetawdot}; subtract it from motor torque to obtain \(u\).
+\item
+  Add \texttt{com\_angle\_offset} to \texttt{thetab} (\texttt{ComOffset}
+  Bias block), apply \texttt{cos}, then multiply by
+  \texttt{gravity\_gain}. The body sum \texttt{Add} is
+  \(\tau_f-\tau-mgd\cos(\cdot)-b_c\dot\theta_c\); apply
+  \texttt{body\_accel\_gain} to obtain \(\ddot\theta_c\).
+\item
+  Integrate \(\ddot\theta_c\) to \(\dot\theta_c\), then to \(\theta_c\).
+  Initial conditions: \texttt{thetabdot0}, then \texttt{thetab0}.
+\item
+  Apply \texttt{wheel\_accel\_gain} to \(u\) to obtain absolute wheel
+  acceleration \(\ddot\theta_c+\ddot\theta_w\). Subtract
+  \(\ddot\theta_c\) to obtain relative \(\ddot\theta_w\), then integrate
+  with \texttt{thetawdot0} and \texttt{thetaw0}.
+\end{enumerate}
+
+The original pictured model used \texttt{cos(thetab*pi/180)}, making
+gravity nearly maximum at its zero initial state. With the listed
+values, \texttt{mgd} is about 0.8844 N m and \(\bar I_{cO}\) is
+0.0133125 kg m², so a 0.19 N m input at zero produces a very large
+acceleration. That explains the sharp scope drop; it is not an
+integration discontinuity.
+
+\subsubsection{MATLAB simulation and 3D
+animation}\label{matlab-simulation-and-3d-animation}
+
+Run \href{Matlab\%20sim/cubli_3d_compare.m}{cubli\_3d\_compare.m}. It
+performs these steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Runs \texttt{Params.m}.
+\item
+  Runs the Simulink model with \texttt{RelTol\ =\ 1e-8} and
+  \texttt{MaxStep\ =\ dt}, then reads the \textbf{To Workspace} outputs
+  \texttt{thetab}, \texttt{thetabddot}, \texttt{thetawdot}, and
+  optionally \texttt{thetaw} (otherwise integrated from
+  \texttt{thetawdot}).
+\item
+  Runs the exact nonlinear Eq. (9) model with \texttt{ode45} as a
+  reference.
+\item
+  Resamples both on a uniform time grid and stores the Simulink result
+  in the workspace table \texttt{measurements}.
+\item
+  Overlays Simulink and \texttt{ode45} for \(\theta_b\),
+  \(\ddot\theta_b\), relative \(\dot\theta_w\), and total energy
+  \(\tfrac12\bar I_{cO}\dot\theta_c^2+\tfrac12 I_{wG}(\dot\theta_c+\dot\theta_w)^2+mgd\sin(\theta_c+\delta)\).
+\item
+  Animates the selected source (\texttt{animationSource\ =\ "simulink"}
+  or \texttt{"ode"}) about the fixed \(X\) edge. Red marks the pivot,
+  RGB lines are body axes, magenta is the wheel axis, and the orange
+  spoke shows wheel rotation.
+\end{enumerate}
+
+\subsubsection{Sending Simulink output to the
+animation}\label{sending-simulink-output-to-the-animation}
+
+The model
+\href{Matlab\%20sim/dynamic_of_reaction_wheel.slx}{dynamic\_of\_reaction\_wheel.slx}
+already contains these \textbf{To Workspace} blocks (Save format
+\texttt{Timeseries}), each connected to a \textbf{radian} signal, not to
+a \texttt{180/pi} scope gain:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Connect to
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{thetab} & \texttt{Integrator1} (second body integrator),
+\(\theta_b\) \\
+\texttt{thetabdot} & \texttt{Integrator} (first body integrator),
+\(\dot\theta_b\) \\
+\texttt{thetabddot} & \texttt{Gain} (\texttt{body\_accel\_gain}),
+\(\ddot\theta_b\) \\
+\texttt{thetawdot} & \texttt{Integrator3} (first wheel integrator),
+relative \(\dot\theta_w\) \\
+\texttt{thetaw} & \texttt{Integrator2} (second wheel integrator) \\
+\end{longtable}
+}
+
+For \texttt{thetawdot} to be relative to the body, the wheel branch is:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{Add1\ =\ tau\ -\ tau\_f} (second input from the
+  \texttt{Friction} block, \textbf{not} from the body sum).
+\item
+  \texttt{wheel\_accel\_gain} gives absolute acceleration
+  \(\ddot\theta_b+\ddot\theta_w=u/I_{wG}\).
+\item
+  \texttt{Add2} (\texttt{+-}) subtracts the \texttt{body\_accel\_gain}
+  \textbf{output} \(\ddot\theta_b\) (an acceleration, not the torque sum
+  \texttt{Add}), giving relative \(\ddot\theta_w\) for the wheel-speed
+  integrator.
+\end{enumerate}
+
+Integrator initial conditions are \texttt{thetabdot0}, \texttt{thetab0},
+\texttt{thetawdot0}, and \texttt{thetaw0}. The gravity block uses
+\texttt{cos(thetab\ +\ com\_angle\_offset)}; the animation draws the
+center of mass at the same angle:
+
+\[\mathbf r_G=
+\begin{bmatrix}
+0\\d\cos(\theta_b+\delta)\\d\sin(\theta_b+\delta)
+\end{bmatrix},
+\qquad \delta=\texttt{com\_angle\_offset}.\]
+
+With \(\delta=0\) (printed Eq. (7)), upright is \(\theta_b=90^\circ\);
+with \(\delta=\pi/4\) (Eq. (6)), upright is \(45^\circ\).
+
+There is no floor collision, hard stop, motor saturation, or feedback
+controller in this open-loop model. Once the cube falls past the
+physical floor, the mathematical model continues rotating; add contact
+dynamics separately if impacts are required.
+
+\subsection{Study material}\label{study-material}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{Ref/STUDY.md}{ETH thesis summary, textbook reading, and math
+  exercise}
+\item
+  \href{Ref/phdthesisE-Collection.pdf}{Attached ETH thesis: Michael
+  Muehlebach, 2018}
+\item
+  \href{https://idsc.ethz.ch/research-dandrea/research-projects/archive/cubli.html}{ETH
+  Cubli project and papers}
+\item
+  \href{https://www.egr.msu.edu/~khalil/NonlinearSystems/index.html}{Khalil,
+  \emph{Nonlinear Systems}, 3rd edition: author's companion site}
+\end{itemize}
+
+\end{document}
